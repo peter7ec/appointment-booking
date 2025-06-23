@@ -6,3 +6,71 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          String        @id @default(cuid())
+  email       String        @unique
+  password    String
+  name        String
+  phoneNumber String
+  role        Role          @default(CLIENT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Provider    Provider?
+  Appointment Appointment[]
+}
+
+model Provider {
+  id            String          @id @default(cuid())
+  userId        String          @unique
+  user          User            @relation(fields: [userId], references: [id])
+  WorkWeekCicle WorkWeekCicle[]
+  dayOff        DayOff[]
+  Appointment   Appointment[]
+}
+
+model WorkWeekCicle {
+  id         String   @id @default(cuid())
+  dayOfWeel  Int
+  startTime  String
+  endTime    String
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id])
+}
+
+model DayOff {
+  id         String   @id @default(cuid())
+  startDate  DateTime
+  endDate    DateTime
+  reason     String
+  provider   Provider @relation(fields: [providerId], references: [id])
+  providerId String
+}
+
+model Appointment {
+  id         String   @id @default(cuid())
+  serviceId  String
+  service    Service  @relation(fields: [serviceId], references: [id])
+  clientId   String
+  client     User     @relation(fields: [clientId], references: [id])
+  providerId String
+  provider   Provider @relation(fields: [providerId], references: [id])
+  startAt    DateTime
+  endsAt     DateTime
+  createdAt  DateTime
+}
+
+model Service {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  durationMin Int
+  price       Float         @default(0.0)
+  currency    String        @default("HUF")
+  Appointment Appointment[]
+}
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}

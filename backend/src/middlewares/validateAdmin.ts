@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiResponse } from "../types/global";
 import { AuthorizedResponse } from "./authorize";
 
-export function onlyAdmin() {
+export function validateAdmin() {
     return (
         req: AuthorizedResponse,
         res: Response<ApiResponse<{}>>,
