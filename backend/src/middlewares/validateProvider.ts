@@ -10,7 +10,7 @@ export function validateProvider() {
     ) => {
         const user = req.user;
 
-        if (user!.role === "PROVIDER") {
+        if (user!.role === "PROVIDER" || user!.role === "ADMIN") {
             next();
             return;
         }
