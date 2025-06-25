@@ -5,7 +5,7 @@ import { ApiResponse } from "../types/global";
 import { UserNoPw } from "./userTypes";
 import { json } from "stream/consumers";
 import { RegisterUser } from "./userSchema";
-import { AuthorizedResponse } from "../middlewares/authorize";
+import { AuthorizedRequest } from "../middlewares/authorize";
 
 const userController = {
     getAll: async (
@@ -41,7 +41,7 @@ const userController = {
         }
     },
     updatePassword: async (
-        req: AuthorizedResponse,
+        req: AuthorizedRequest,
         res: Response<ApiResponse<UserNoPw>>,
         next: NextFunction
     ) => {

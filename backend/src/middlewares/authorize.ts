@@ -3,7 +3,7 @@ import { Response, Request, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../constants/global";
 
-export interface AuthorizedResponse extends Request {
+export interface AuthorizedRequest extends Request {
     user?: CheckedRole;
 }
 
@@ -15,7 +15,7 @@ type CheckedRole = {
 };
 
 export default function authorize(
-    req: AuthorizedResponse,
+    req: AuthorizedRequest,
     res: Response<ApiResponse<{}>>,
     next: NextFunction
 ) {

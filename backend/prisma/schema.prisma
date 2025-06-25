@@ -21,12 +21,13 @@ model User {
 }
 
 model Provider {
-  id            String          @id @default(cuid())
-  userId        String          @unique
-  user          User            @relation(fields: [userId], references: [id])
-  WorkWeekCicle WorkWeekCicle[]
-  dayOff        DayOff[]
-  Appointment   Appointment[]
+  id              String            @id @default(cuid())
+  userId          String            @unique
+  user            User              @relation(fields: [userId], references: [id])
+  WorkWeekCicle   WorkWeekCicle[]
+  dayOff          DayOff[]
+  Appointment     Appointment[]
+  providerService ProviderService[]
 }
 
 model WorkWeekCicle {
@@ -48,25 +49,27 @@ model DayOff {
 }
 
 model Appointment {
-  id         String   @id @default(cuid())
-  serviceId  String
-  service    Service  @relation(fields: [serviceId], references: [id])
-  clientId   String
-  client     User     @relation(fields: [clientId], references: [id])
-  providerId String
-  provider   Provider @relation(fields: [providerId], references: [id])
-  startAt    DateTime
-  endsAt     DateTime
-  createdAt  DateTime
+  id              String          @id @default(cuid())
+  serviceId       String
+  providerService ProviderService @relation(fields: [serviceId], references: [id])
+  clientId        String
+  client          User            @relation(fields: [clientId], references: [id])
+  providerId      String
+  provider        Provider        @relation(fields: [providerId], references: [id])
+  startAt         DateTime
+  endsAt          DateTime
+  createdAt       DateTime
 }
 
-model Service {
+model ProviderService {
   id          String        @id @default(cuid())
   name        String        @unique
   durationMin Int
   price       Float         @default(0.0)
   currency    String        @default("HUF")
   Appointment Appointment[]
+  Provider    Provider      @relation(fields: [providerId], references: [id])
+  providerId  String
 }
 
 enum Role {

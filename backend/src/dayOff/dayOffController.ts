@@ -1,12 +1,12 @@
 import { DayOff } from "@prisma/client";
-import { AuthorizedResponse } from "../middlewares/authorize";
+import { AuthorizedRequest } from "../middlewares/authorize";
 import { ApiResponse } from "../types/global";
 import { NextFunction, Response } from "express";
 import dayOffService from "./dayOffService";
 
 const dayOffController = {
     getDayOffs: async (
-        req: AuthorizedResponse,
+        req: AuthorizedRequest,
         res: Response<ApiResponse<DayOff[]>>,
         next: NextFunction
     ) => {
@@ -22,7 +22,7 @@ const dayOffController = {
         }
     },
     createDayOff: async (
-        req: AuthorizedResponse,
+        req: AuthorizedRequest,
         res: Response<ApiResponse<DayOff>>,
         next: NextFunction
     ) => {
@@ -41,7 +41,7 @@ const dayOffController = {
         }
     },
     deleteDayOff: async (
-        req: AuthorizedResponse,
+        req: AuthorizedRequest,
         res: Response<ApiResponse<DayOff>>,
         next: NextFunction
     ) => {
