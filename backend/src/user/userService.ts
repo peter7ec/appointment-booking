@@ -33,6 +33,14 @@ const userService = {
 
         return foundedUser;
     },
+    getMyData: async (userId: string): Promise<UserNoPw> => {
+        const userData = await prisma.user.findUnique({
+            where: { id: userId },
+            select: noPwSelect,
+        });
+
+        return userData!;
+    },
     updatePassword: async (
         userId: string,
         newPassword: string

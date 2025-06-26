@@ -40,6 +40,22 @@ const userController = {
             next(error);
         }
     },
+    getMyData: async (
+        req: AuthorizedRequest,
+        res: Response<ApiResponse<UserNoPw>>,
+        next: NextFunction
+    ) => {
+        try {
+            const myData = await userService.getMyData(req.user!.id);
+            res.json({
+                ok: true,
+                message: "My data readed!",
+                data: myData,
+            });
+        } catch (error) {
+            next(error);
+        }
+    },
     updatePassword: async (
         req: AuthorizedRequest,
         res: Response<ApiResponse<UserNoPw>>,

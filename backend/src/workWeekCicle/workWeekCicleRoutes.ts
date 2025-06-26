@@ -7,6 +7,7 @@ import {
 } from "./workWeekCicleSchema";
 import workWeekCircleController from "./workWeekCicleController";
 import authorize from "../middlewares/authorize";
+import { validateAdmin } from "../middlewares/validateAdmin";
 
 const workWeekCicleRouter = Router();
 
@@ -21,6 +22,7 @@ workWeekCicleRouter.get("/:providerId", workWeekCircleController.workTimeById);
 workWeekCicleRouter.post(
     "/",
     authorize,
+    validateAdmin(),
     validateRequestBody(newWorkWeekCicle),
     workWeekCircleController.createWorkTime
 );
@@ -28,6 +30,7 @@ workWeekCicleRouter.post(
 workWeekCicleRouter.patch(
     "/:workCicleId",
     authorize,
+    validateAdmin(),
     validateRequestBody(editWorkWeekCicle),
     workWeekCircleController.editWorkTime
 );
@@ -35,6 +38,7 @@ workWeekCicleRouter.patch(
 workWeekCicleRouter.delete(
     "/:workCicleId",
     authorize,
+    validateAdmin(),
     workWeekCircleController.deleteWorkTime
 );
 

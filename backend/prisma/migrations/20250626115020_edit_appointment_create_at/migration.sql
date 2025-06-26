@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Appointment" ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP;

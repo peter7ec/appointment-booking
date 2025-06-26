@@ -58,7 +58,7 @@ model Appointment {
   provider        Provider        @relation(fields: [providerId], references: [id])
   startAt         DateTime
   endsAt          DateTime
-  createdAt       DateTime
+  createdAt       DateTime        @default(now())
 }
 
 model ProviderService {
