@@ -32,7 +32,7 @@ model Provider {
 
 model WorkWeekCicle {
   id         String   @id @default(cuid())
-  dayOfWeel  Int
+  dayOfWeek  Int[]
   startTime  String
   endTime    String
   providerId String
