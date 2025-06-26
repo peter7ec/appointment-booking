@@ -1,6 +1,8 @@
 import { Router } from "express";
 import appointmentController from "./appointmentController";
 import { validateProvider } from "../middlewares/validateProvider";
+import validateRequestBody from "../middlewares/validateRequestBody";
+import { editAppointment, newAppointment } from "./appointmentSchema";
 
 const appointmentRouter = Router();
 
@@ -30,13 +32,14 @@ appointmentRouter.delete(
 
 appointmentRouter.patch(
     "/:appointmentId",
+    validateRequestBody(editAppointment),
     validateProvider(),
     appointmentController.appointmentEdit
 );
 
 appointmentRouter.post(
     "/",
-    validateProvider(),
+    validateRequestBody(newAppointment),
     appointmentController.appointmentCreate
 );
 
