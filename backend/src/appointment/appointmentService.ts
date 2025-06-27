@@ -90,6 +90,51 @@ const appointmentService = {
         if (!providerExists)
             throw new HttpError("Provider does not exists", 404);
 
+        const isDayOff = await prisma.dayOff.count({
+            where: {
+                providerId: providedBody.providerId,
+                startDate: { lte: providedBody.startAt },
+                endDate: { gte: providedBody.endsAt },
+            },
+        });
+
+        if (isDayOff) throw new HttpError("Not available time!", 409);
+
+        const appointmentDate = new Date(providedBody.startAt);
+
+        const dayOfWeek = appointmentDate.getDay();
+
+        const workCycle = await prisma.workWeekCicle.findFirst({
+            where: {
+                providerId: providedBody.providerId,
+                dayOfWeek: { has: dayOfWeek },
+            },
+        });
+
+        if (!workCycle) throw new HttpError("Provider not working this day.");
+
+        const datePart = appointmentDate.toISOString().split("T")[0];
+        const workDayStart = new Date(
+            `${datePart}T${workCycle.startTime}:00.000Z`
+        );
+        const workDayEnd = new Date(`${datePart}T${workCycle.endTime}:00.000Z`);
+
+        if (
+            providedBody.startAt < workDayStart ||
+            providedBody.endsAt > workDayEnd
+        )
+            throw new HttpError("Out of work time.", 409);
+
+        const isAppointed = await prisma.appointment.count({
+            where: {
+                providerId: providedBody.providerId,
+                startAt: { lt: providedBody.endsAt },
+                endsAt: { gt: providedBody.startAt },
+            },
+        });
+
+        if (isAppointed) throw new HttpError("Not available time!", 409);
+
         const serviceExists = await prisma.providerService.count({
             where: { id: providedBody.serviceId },
         });
