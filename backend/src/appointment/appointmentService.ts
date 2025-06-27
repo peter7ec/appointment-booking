@@ -111,7 +111,8 @@ const appointmentService = {
             },
         });
 
-        if (!workCycle) throw new HttpError("Provider not working this day.");
+        if (!workCycle)
+            throw new HttpError("Provider not working this day.", 409);
 
         const datePart = appointmentDate.toISOString().split("T")[0];
         const workDayStart = new Date(
