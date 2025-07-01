@@ -1,10 +1,16 @@
-import { useCallback, useContext, useState, type FormEvent } from "react";
+import {
+    useCallback,
+    useContext,
+    useEffect,
+    useState,
+    type FormEvent,
+} from "react";
 import AuthContext from "../contexts/AuthContext";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const initialLoginFormData = {
     email: "",
@@ -15,13 +21,22 @@ export default function LoginPage() {
     const auth = useContext(AuthContext);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [formData, setFormData] = useState(initialLoginFormData);
     const [error, setError] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
 
     const handleRegisterBtn = () => {
         navigate("/register");
     };
+
+    useEffect(() => {
+        if (location.state?.message) {
+            setSuccessMessage(location.state.message);
+            window.history.replaceState({}, document.title);
+        }
+    }, [location.state]);
 
     const handleSubmit = useCallback(
         async (e: FormEvent) => {
@@ -46,6 +61,14 @@ export default function LoginPage() {
     );
     return (
         <form onSubmit={handleSubmit} className="flex items-center flex-col">
+            {successMessage && (
+                <Alert
+                    variant="default"
+                    className="mt-3 w-8/10 bg-green-100 border-green-400"
+                >
+                    <AlertDescription>{successMessage}</AlertDescription>
+                </Alert>
+            )}
             <div className="my-5 w-8/10">
                 <Label htmlFor="email">Email</Label>
                 <Input

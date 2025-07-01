@@ -14,6 +14,12 @@ type AuthContextProviderProps = {
     children: ReactNode;
 };
 
+type RegisterParams = Parameters<typeof authService.register>;
+type RegisterSuccess = {
+    ok: boolean;
+    message: string;
+};
+
 type LoginSuccess = {
     ok: boolean;
     message: string;
@@ -28,6 +34,12 @@ type AuthTokenData = {
 type AuthContextType = {
     user: AuthUser | undefined;
     login: (email: string, password: string) => Promise<LoginSuccess>;
+    register: (
+        email: string,
+        name: string,
+        phoneNumber: string,
+        password: string
+    ) => Promise<RegisterSuccess>;
     logOut: () => void;
 };
 
@@ -36,6 +48,32 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthContextProvider({ children }: AuthContextProviderProps) {
     const navigate = useNavigate();
     const [user, setUser] = useState<AuthUser | undefined>();
+
+    const register = useCallback(
+        async (
+            email: string,
+            name: string,
+            phoneNumber: string,
+            password: string
+        ): Promise<RegisterSuccess> => {
+            const registerResponse = await authService.register(
+                email,
+                name,
+                phoneNumber,
+                password
+            );
+
+            if (!registerResponse.ok) {
+                return {
+                    ok: false,
+                    message: registerResponse.message || "Failed Registration",
+                };
+            }
+
+            return { ok: true, message: "Registered successfully" };
+        },
+        []
+    );
 
     const login = useCallback(
         async (email: string, password: string): Promise<LoginSuccess> => {
@@ -72,14 +110,39 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
         //TODO: validate local storage data
 
         if (lsUserString) {
-            const lsUser = JSON.parse(lsUserString) as AuthUser;
+            /* const lsUser = JSON.parse(lsUserString) as AuthUser;
 
-            setUser(lsUser);
+            setUser(lsUser); */
+            if (!lsUserString) {
+                return;
+            }
+
+            try {
+                const lsUser = JSON.parse(lsUserString) as AuthUser;
+
+                if (
+                    !lsUser.token ||
+                    !lsUser.id ||
+                    !lsUser.email ||
+                    !lsUser.role
+                ) {
+                    console.error(
+                        "Missing or corrupted auth data in localStorage."
+                    );
+                    localStorage.removeItem("auth");
+                    return;
+                }
+
+                setUser(lsUser);
+            } catch (error) {
+                console.error("Localstorage auth data error:", error);
+                localStorage.removeItem("auth");
+            }
         }
     }, []);
 
     return (
-        <AuthContext.Provider value={{ login, logOut, user }}>
+        <AuthContext.Provider value={{ login, register, logOut, user }}>
             {children}
         </AuthContext.Provider>
     );

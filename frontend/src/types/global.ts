@@ -9,6 +9,13 @@ export type ApiResponse<T> = {
 export type LoginResponse = {
     token?: JwtToken;
 };
+export type RegisterResponse = {
+    id: string;
+    email: string;
+    name: string;
+    phoneNumber: string;
+    createAt: string;
+};
 export type Ticket = {
     id: string;
     title: string;
