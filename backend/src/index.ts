@@ -3,10 +3,12 @@ import { JWT_SECRET, PORT } from "./constants/global";
 import errorHandler from "./middlewares/errorHandle";
 import authRouter from "./auth/authRoutes";
 import apiRouter from "./api/apiRouters";
+import cors from "cors";
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use("/auth", authRouter);
 app.use("/api", apiRouter);
