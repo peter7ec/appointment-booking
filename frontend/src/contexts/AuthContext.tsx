@@ -14,7 +14,6 @@ type AuthContextProviderProps = {
     children: ReactNode;
 };
 
-type RegisterParams = Parameters<typeof authService.register>;
 type RegisterSuccess = {
     ok: boolean;
     message: string;
